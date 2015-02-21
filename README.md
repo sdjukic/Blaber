@@ -1,2 +1,2 @@
 # Blaber
-playing with sinatra and D3
+Playing with sinatra and D3
