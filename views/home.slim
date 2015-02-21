@@ -4,29 +4,32 @@ h2 What and Who is Blabbing?!
 
 javascript:
      var fill = d3.scale.category20();
-   
-     function getData(){
-       $.getJSON("/data", function(raw) {
-         var words = [];
-         $.each( raw, function(key, value){
-           words.push(value);
-           console.log(value);
+     var words_in_text = [];
+
+     function getData(collection){
+       $.getJSON("/data", function(data) {
+         $.each(data, function(key, value){
+           collection.push(value);
          });
-       })
-     }
-     getData();
-     d3.layout.cloud().size([300, 300])
-      .words([
-        "Hello", "world", "normally", "you", "want", "more", "words",
-        "than", "this"].map(function(d) {
-        return {text: d, size: 10 + Math.random() * 90};
-      }))
-      .padding(5)
-      .rotate(function() { return ~~(Math.random() * 2) * 90; })
-      .font("Impact")
-      .fontSize(function(d) { return d.size; })
-      .on("end", draw)
-      .start();
+       
+         d3.layout.cloud().size([300, 300])
+             .words(collection.map(function(d) {
+                return {text: d, size: 10 + Math.random() * 90};
+           }))
+           .padding(5)
+           .rotate(function() { return ~~(Math.random() * 2) * 90; })
+           .font("Impact")
+           .fontSize(function(d) { return d.size; })
+           .on("end", draw)
+           .start();
+       
+       });
+      }
+     
+     getData(words_in_text);
+     
+
+     
   
      function draw(words) {
       d3.select("body").append("svg")
