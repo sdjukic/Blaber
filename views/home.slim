@@ -9,12 +9,13 @@ javascript:
      function getData(collection){
        $.getJSON("/data", function(data) {
          $.each(data, function(key, value){
-           collection.push(value);
+           collection.push({'frequency': value,
+                            'word': key});
          });
-       
-         d3.layout.cloud().size([300, 300])
+         
+         d3.layout.cloud().size([600, 600])
              .words(collection.map(function(d) {
-                return {text: d, size: 10 + Math.random() * 90};
+                return {text: d['word'], size: 5 + d['frequency'] * 10};
            }))
            .padding(5)
            .rotate(function() { return ~~(Math.random() * 2) * 90; })
@@ -33,10 +34,10 @@ javascript:
   
      function draw(words) {
       d3.select("body").append("svg")
-        .attr("width", 300)
-        .attr("height", 300)
+        .attr("width", 600)
+        .attr("height", 600)
       .append("g")
-        .attr("transform", "translate(150,150)")
+        .attr("transform", "translate(300,300)")
       .selectAll("text")
         .data(words)
       .enter().append("text")

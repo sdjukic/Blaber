@@ -22,19 +22,24 @@ class Blabber < Sinatra::Base
       res = HTTParty.get(query)
       parsed = JSON.parse(res.body)
 
-      filtered_text = []
+      word_frequencies = Hash.new(0)
+      counter = 0
 
       parsed['response']['docs'].each do |d|
       	d["snippet"].split(' ').each do |word|
-          filtered_text.push(word.chomp(",")) unless STOP_WORDS.has_key?(word.downcase) or word.match(/\d+/)
+          word_frequencies[word.chomp(",")] += 1 unless STOP_WORDS.has_key?(word.downcase) or word.match(/\d+/)
+          counter += 1
         end
+
         d["headline"]["print_headline"].split().each do |word|
-          filtered_text.push(word.chomp(",")) unless STOP_WORDS.has_key?(word.downcase) or word.match(/\d+/)
+          word_frequencies[word.chomp(",")] += 1 unless STOP_WORDS.has_key?(word.downcase) or word.match(/\d+/)
+          counter += 1
         end
 
       end 
-
-      filtered_text
+      
+      #word_frequencies["total_number_of_words"] = counter
+      word_frequencies
     end
 
   configure do
