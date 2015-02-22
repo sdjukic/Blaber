@@ -49,6 +49,9 @@ class Blabber < Sinatra::Base
 
       word_frequencies = Hash.new(0)
       counter = 0
+      # for normalizing words size in the cloud
+      min_frequency = 1           # can I get away with this assumption
+      max_frequency = 0
 
       parsed['response']['docs'].each do |d|
       	d["snippet"].split(' ').each do |word|
@@ -56,14 +59,17 @@ class Blabber < Sinatra::Base
           counter += 1
         end
 
+        # if word in headline it has higher weight
         d["headline"]["print_headline"].split().each do |word|
-          word_frequencies[word.chomp(",")] += 1 unless STOP_WORDS.has_key?(word.downcase) or word.match(/\d+/)
-          counter += 1
+          word_frequencies[word.chomp(",")] += 2 unless STOP_WORDS.has_key?(word.downcase) or word.match(/\d+/)
+          max_frequency = word_frequencies[word.chomp(",")] if word_frequencies[word.chomp(",")] > max_frequency
+          counter += 1                                  
         end
 
       end 
       
       #word_frequencies["total_number_of_words"] = counter
+      puts "Max frequency: #{max_frequency}"
       word_frequencies
   end
 
