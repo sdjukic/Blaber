@@ -76,14 +76,13 @@ class Blabber < Sinatra::Base
       
       (0..MAX_NO_PAGES).each do |p|
         query = QUERY_TEXT + date + "&page=#{p}"+ "&api-key=" + API_KEY
-        puts query
+        
         res = HTTParty.get(query)
         parsed = JSON.parse(res.body)
         
 
         if parsed['status'] == 'OK'
           parsed['response']['docs'].each do |d|
-            puts d
       	    d["snippet"].split(' ').each do |word|
               word_frequencies[word.chomp(",")] += 1 unless STOP_WORDS.has_key?(word.downcase) or word.match(/\d+/)
               counter += 1
