@@ -9,7 +9,7 @@ require 'date'
 class Blabber < Sinatra::Base
 
   configure do
-    data = YAML.load_file('.secret_config.yaml')
+    #data = YAML.load_file('.secret_config.yaml')
     API_KEY = ENV['NYT_ARTICLE_KEY']
     
     STOP_WORDS = {}
