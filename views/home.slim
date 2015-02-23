@@ -1,18 +1,23 @@
-h1 Yo Bro
+header
 
-h2 What and Who is Blabbing?!
+
+div id='content'
+
 
 javascript:
      var fill = d3.scale.category20();
      var words_in_text = [];
 
      function getData(collection){
+
+       $("#content").empty().html('<img src="./images/ajax-loader.gif" />');
+
        $.getJSON("/data", function(data) {
          $.each(data, function(key, value){
            collection.push({'frequency': value,
                             'word': key});
          });
-
+         
          d3.layout.cloud().size([600, 600])
              .words(collection.map(function(d) {
                 return {text: d['word'], size: 5 + d['frequency'] * 4};
@@ -25,12 +30,13 @@ javascript:
            .start();
        
        });
+
       }
      
      getData(words_in_text);
 
      function draw(words) {
-      d3.select("body").append("svg")
+      d3.select("#content").append("svg")
         .attr("width", 600)
         .attr("height", 600)
       .append("g")
@@ -46,5 +52,6 @@ javascript:
           return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
         })
         .text(function(d) { return d.text; });
+        $("img").toggle();
     }
      

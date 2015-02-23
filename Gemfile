@@ -6,6 +6,7 @@ gem 'slim'
 gem 'rubocop'
 gem 'json'
 gem 'httparty'
+gem 'puma'
 
 
 group :test do
