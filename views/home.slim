@@ -15,7 +15,7 @@ javascript:
 
          d3.layout.cloud().size([600, 600])
              .words(collection.map(function(d) {
-                return {text: d['word'], size: 5 + d['frequency'] * 10};
+                return {text: d['word'], size: 5 + d['frequency'] * 4};
            }))
            .padding(2)
            .rotate(function() { return ~~(Math.random() * 2) * 90; })
