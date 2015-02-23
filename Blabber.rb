@@ -4,6 +4,7 @@ require 'slim'
 require 'yaml'
 require 'httparty'
 require 'json'
+require 'date'
 
 class Blabber < Sinatra::Base
 
@@ -19,22 +20,22 @@ class Blabber < Sinatra::Base
 
     MAX_NO_PAGES = 10
     QUERY_TEXT = "http://api.nytimes.com/svc/search/v2/articlesearch.json?"
-    DATE = "&begin_date=20150219&end_date=20150220"
-    LATEST_QUERY = Time.new(0)
-    YESTERDAY = 86400      # number of the seconds in the day
+    @@latest_query = Date.new(0)
     @@cached_results = ""
   end
 
   
   get '/' do
-  	slim :home
+  	slim :root
   end
 
 	
   get '/data' do
-    if Time.now - LATEST_QUERY > YESTERDAY
-      LATEST_QUERY = Time.now
-		  @@cached_results = make_api_call
+    if Date.today != @@latest_query 
+      @@latest_query = Date.today
+		  @@cached_results = make_api_call((@@latest_query - 1).strftime("%Y%m%d"),
+                                       @@latest_query.strftime("%Y%m%d"))
+                                      
     end
 
 		@@cached_results.to_json
@@ -47,12 +48,22 @@ class Blabber < Sinatra::Base
   end
 
 
+  post '/form' do
+    if params[:time] == 'daily'
+      # Here render home page with appropriate time
+      # And how to pass this parameter to script in that page?
+      # today = Date.today
+      slim :home
+    end
+
+  end
+
   not_found do
     slim :four_o_four
   end
 
 
-  def make_api_call()
+  def make_api_call(date_first, date_second)
       
       word_frequencies = Hash.new(0)
       counter = 0
@@ -61,15 +72,17 @@ class Blabber < Sinatra::Base
       max_frequency = 0
       
       
+      date = "&begin_date=#{date_first}&end_date=#{date_second}"
+      
       (0..MAX_NO_PAGES).each do |p|
-        query = QUERY_TEXT + DATE + "&page=#{p}"+ "&api-key=" + API_KEY
+        query = QUERY_TEXT + date + "&page=#{p}"+ "&api-key=" + API_KEY
+        
         res = HTTParty.get(query)
         parsed = JSON.parse(res.body)
         
 
         if parsed['status'] == 'OK'
           parsed['response']['docs'].each do |d|
-            puts d
       	    d["snippet"].split(' ').each do |word|
               word_frequencies[word.chomp(",")] += 1 unless STOP_WORDS.has_key?(word.downcase) or word.match(/\d+/)
               counter += 1
