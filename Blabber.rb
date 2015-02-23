@@ -9,8 +9,8 @@ require 'date'
 class Blabber < Sinatra::Base
 
   configure do
-    #data = YAML.load_file('.secret_config.yaml')
-    API_KEY = ENV['NYT_ARTICLE_KEY']
+    data = YAML.load_file('.secret_config.yaml')
+    API_KEY = data['NYT_ARTICLE_KEY']
     
     STOP_WORDS = {}
     
@@ -21,7 +21,7 @@ class Blabber < Sinatra::Base
 
     MAX_NO_PAGES = 10
     QUERY_TEXT = "http://api.nytimes.com/svc/search/v2/articlesearch.json?"
-    @@latest_query = Date.new(0)
+    @@latest_query = DateTime.new(0)
     @@cached_results = ""
   end
 
@@ -32,9 +32,10 @@ class Blabber < Sinatra::Base
 
 	
   get '/data' do
-    if Date.today != @@latest_query 
-      @@latest_query = Date.today
-		  @@cached_results = make_api_call((@@latest_query - 1).strftime("%Y%m%d"),
+    now = DateTime.now
+    if now.strftime("%Y%m%d") != @@latest_query.strftime("%Y%m%d") or now.strftime("%H") != @@latest_query.strftime("%H") 
+      @@latest_query = DateTime.now
+		  @@cached_results = daily_api_call((@@latest_query - 1).strftime("%Y%m%d"),
                                        @@latest_query.strftime("%Y%m%d"))
                                       
     end
@@ -64,7 +65,7 @@ class Blabber < Sinatra::Base
   end
 
 
-  def make_api_call(date_first, date_second)
+  def daily_api_call(no_days, date_first, date_second)
       
       word_frequencies = Hash.new(0)
       counter = 0
@@ -73,10 +74,12 @@ class Blabber < Sinatra::Base
       max_frequency = 0
       
       
+      # add loop for number of days aka 30 for monthly, and 7 for weekly
+      # and for each day you will have to change date and pull 9 pages
       date = "&begin_date=#{date_first}&end_date=#{date_second}"
       
       (0..MAX_NO_PAGES).each do |p|
-        query = QUERY_TEXT + date + "&page=#{p}"+ "&api-key=" + API_KEY
+        query = QUERY_TEXT + date + "&page=#{p}&sort=newest"+ "&api-key=" + API_KEY
         
         res = HTTParty.get(query)
         parsed = JSON.parse(res.body)
