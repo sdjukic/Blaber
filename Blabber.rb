@@ -21,7 +21,7 @@ class Blabber < Sinatra::Base
 
     MAX_NO_PAGES = 10
     QUERY_TEXT = "http://api.nytimes.com/svc/search/v2/articlesearch.json?"
-    @@latest_query = Date.new(0)
+    @@latest_query = DateTime.new(0)
     @@cached_results = ""
   end
 
@@ -31,9 +31,12 @@ class Blabber < Sinatra::Base
   end
 
 	
-  get '/data' do
-    if Date.today != @@latest_query 
-      @@latest_query = Date.today
+  get '/daily-data' do
+    today = DateTime.now
+    if today.strftime("%Y%m%d") != @@latest_query.strftime("%Y%m%d")  # this is new day put @@latest_query in history array
+      
+    #if today.strftime("%H") != @@latest_query.strftime("%H")     # in this case it is the same day just update at the hour  
+      @@latest_query = DateTime.now
 		  @@cached_results = make_api_call((@@latest_query - 1).strftime("%Y%m%d"),
                                        @@latest_query.strftime("%Y%m%d"))
                                       
