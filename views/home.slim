@@ -12,7 +12,7 @@ javascript:
 
        $("#content").empty().html('<img src="./images/ajax-loader.gif" />');
 
-       $.getJSON("/data", function(data) {
+       $.getJSON("/daily-data", function(data) {
          $.each(data, function(key, value){
            collection.push({'frequency': value,
                             'word': key});
