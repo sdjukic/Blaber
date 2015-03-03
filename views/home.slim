@@ -3,6 +3,7 @@ header
 
 div id='content'
 
+<!-- This script taken from example in https://github.com/jasondavies/d3-cloud -->
 
 javascript:
      var fill = d3.scale.category20();
@@ -12,7 +13,7 @@ javascript:
 
        $("#content").empty().html('<img src="./images/ajax-loader.gif" />');
 
-       $.getJSON("/data", function(data) {
+       $.getJSON("/daily-data", function(data) {
          $.each(data, function(key, value){
            collection.push({'frequency': value,
                             'word': key});

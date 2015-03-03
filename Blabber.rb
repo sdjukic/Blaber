@@ -31,12 +31,14 @@ class Blabber < Sinatra::Base
   end
 
 	
-  get '/data' do
-    now = DateTime.now
-    if now.strftime("%Y%m%d") != @@latest_query.strftime("%Y%m%d") or now.strftime("%H") != @@latest_query.strftime("%H") 
+  get '/daily-data' do
+    today = DateTime.now
+    if today.strftime("%Y%m%d") != @@latest_query.strftime("%Y%m%d")  # this is new day put @@latest_query in history array
+      
+    #if today.strftime("%H") != @@latest_query.strftime("%H")     # in this case it is the same day just update at the hour  
       @@latest_query = DateTime.now
 		  @@cached_results = daily_api_call((@@latest_query - 1).strftime("%Y%m%d"),
-                                       @@latest_query.strftime("%Y%m%d"))
+      @@latest_query.strftime("%Y%m%d"))
                                       
     end
 
@@ -65,7 +67,7 @@ class Blabber < Sinatra::Base
   end
 
 
-  def daily_api_call(no_days, date_first, date_second)
+  def daily_api_call(date_first, date_second)
       
       word_frequencies = Hash.new(0)
       counter = 0
