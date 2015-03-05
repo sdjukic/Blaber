@@ -29,6 +29,7 @@ class Blabber < Sinatra::Base
     QUERY_TEXT = "http://api.nytimes.com/svc/search/v2/articlesearch.json?"
     @@latest_query = DateTime.new(0)
     @@cached_results = ""
+    @@number_of_daily_queries = 0
   end
 
   
@@ -40,12 +41,19 @@ class Blabber < Sinatra::Base
   get '/daily-data' do
     today = DateTime.now
     if today.strftime("%Y%m%d") != @@latest_query.strftime("%Y%m%d")  # this is new day put @@latest_query in history array
-      
-    #if today.strftime("%H") != @@latest_query.strftime("%H")     # in this case it is the same day just update at the hour  
+      puts "Hittin first time today"
+      @@number_of_daily_queries = 1
       @@latest_query = DateTime.now
-		  @@cached_results = daily_api_call((@@latest_query - 1).strftime("%Y%m%d"),
+      @@cached_results = daily_api_call((@@latest_query - 1).strftime("%Y%m%d"),
       @@latest_query.strftime("%Y%m%d"))
-                                      
+    else
+      if today.strftime("%H") != @@latest_query.strftime("%H")     # in this case it is the same day just update at the hour  
+        puts "Update on the hour"
+        @@number_of_daily_queries += 1  
+        @@latest_query = DateTime.now
+		    @@cached_results = daily_api_call((@@latest_query - 1).strftime("%Y%m%d"),
+        @@latest_query.strftime("%Y%m%d"))
+      end                                
     end
 
 		@@cached_results.to_json

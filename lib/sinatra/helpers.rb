@@ -1,5 +1,8 @@
 
 module Sinatra
+
+  MAX_WORD_SIZE = 80
+
   module Helpers
 
 	  def daily_api_call(date_first, date_second)
@@ -39,8 +42,9 @@ module Sinatra
             end 
           end  
         end
-        #word_frequencies["total_number_of_words"] = counter
-        puts "Max frequency: #{max_frequency}"
+        word_frequencies.delete_if { |key, value| value < 2 }
+        word_frequencies["word_scale"] = MAX_WORD_SIZE / max_frequency
+        puts word_frequencies.length
         word_frequencies
     end
   end
