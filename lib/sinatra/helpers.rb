@@ -9,8 +9,7 @@ module Sinatra
       
         word_frequencies = Hash.new(0)
         counter = 0
-        # for normalizing words size in the cloud
-        min_frequency = 1           # can I get away with this assumption
+       
         max_frequency = 0
       
       
