@@ -10,7 +10,7 @@ https://github.com/jasondavies/d3-cloud
 In order to use JS libraries and frameworks like angular, D3, etc. some of your routes have to return JSON which will be used by JS framework in another route (that happens via AJAX) - take a look at views/home.slim for such an example.
 
 ## Sinatra quirks
-Modules that are in separate files should be in lib/sinatra directory and be in module Sinatra. see helpers.rb
+Modules that are in separate files should be in lib/sinatra directory and be in module Sinatra. See helpers.rb.
 
 ## To run the application 
 `bundle exec rackup -p 3000`

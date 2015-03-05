@@ -1,13 +1,15 @@
 
 module Sinatra
+
+  MAX_WORD_SIZE = 80
+
   module Helpers
 
 	  def daily_api_call(date_first, date_second)
       
         word_frequencies = Hash.new(0)
         counter = 0
-        # for normalizing words size in the cloud
-        min_frequency = 1           # can I get away with this assumption
+       
         max_frequency = 0
       
       
@@ -39,8 +41,9 @@ module Sinatra
             end 
           end  
         end
-        #word_frequencies["total_number_of_words"] = counter
-        puts "Max frequency: #{max_frequency}"
+        word_frequencies.delete_if { |key, value| value < 2 }
+        word_frequencies["word_scale"] = MAX_WORD_SIZE / max_frequency
+        puts word_frequencies.length
         word_frequencies
     end
   end
