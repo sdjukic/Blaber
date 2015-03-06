@@ -48,4 +48,7 @@ module Sinatra
     end
   end
 
+  def update_weekly_array(weekly_array, weekly_hash)
+
+  end
 end

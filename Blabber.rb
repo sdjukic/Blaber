@@ -26,9 +26,12 @@ class Blabber < Sinatra::Base
     end
     
     MAX_NO_PAGES = 10
+    UPDATE_INTERVAL = 3600           # this is update time in seconds aka one hour
     QUERY_TEXT = "http://api.nytimes.com/svc/search/v2/articlesearch.json?"
-    @@latest_query = DateTime.new(0)
-    @@cached_results = ""
+    @@latest_query = Time.new(0)
+    @@today_hash = ""
+    @@weekly_array = []
+    @@weekly_hash = {}
     @@number_of_daily_queries = 0
   end
 
@@ -39,24 +42,26 @@ class Blabber < Sinatra::Base
 
 	
   get '/daily-data' do
-    today = DateTime.now
+    today = Time.now
     if today.strftime("%Y%m%d") != @@latest_query.strftime("%Y%m%d")  # this is new day put @@latest_query in history array
-      puts "Hittin first time today"
+      @@weekly_array << @@today_hash
+      #update_weekly_array(@@weekly_array, weekly_hash) if @@weekly_array.size > 7
+        
       @@number_of_daily_queries = 1
-      @@latest_query = DateTime.now
-      @@cached_results = daily_api_call((@@latest_query - 1).strftime("%Y%m%d"),
+      @@latest_query = Time.now
+      @@today_hash = daily_api_call((@@latest_query - 1).strftime("%Y%m%d"),
       @@latest_query.strftime("%Y%m%d"))
     else
-      if today.strftime("%H") != @@latest_query.strftime("%H")     # in this case it is the same day just update at the hour  
+      if today +  UPDATE_INTERVAL < @@latest_query     # in this case it is the same day just update hour from now
         puts "Update on the hour"
         @@number_of_daily_queries += 1  
         @@latest_query = DateTime.now
-		    @@cached_results = daily_api_call((@@latest_query - 1).strftime("%Y%m%d"),
+		    @@today_hash = daily_api_call((@@latest_query - 1).strftime("%Y%m%d"),
         @@latest_query.strftime("%Y%m%d"))
       end                                
     end
 
-		@@cached_results.to_json
+		@@today_hash.to_json
 	end
 
 	
