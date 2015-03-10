@@ -27,6 +27,7 @@ class Blabber < Sinatra::Base
     
     MAX_NO_PAGES = 10
     UPDATE_INTERVAL = 3600           # this is update time in seconds aka one hour
+    YESTERDAY = 86400
     QUERY_TEXT = "http://api.nytimes.com/svc/search/v2/articlesearch.json?"
     
     # from Sinatra up and running 

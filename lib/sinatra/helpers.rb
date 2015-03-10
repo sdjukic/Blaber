@@ -2,6 +2,7 @@
 module Sinatra
 
   MAX_WORD_SIZE = 80
+  DAYS = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
 
   module Helpers
 
@@ -12,11 +13,11 @@ module Sinatra
           puts "Update on new day"
           Blabber.weekly_array << Blabber.today_hash
           Blabber.daily_array = []
-          daily_api_call((today - 86400).strftime("%Y%m%d"), today.strftime("%Y%m%d"))
+          daily_api_call((today - Blabber::YESTERDAY).strftime("%Y%m%d"), today.strftime("%Y%m%d"))
         else
-          if  Blabber.latest_query +  Blabber::UPDATE_INTERVAL <  today    # in this case it is the same day just update hour from now
+          if  Blabber.latest_query.strftime("%H") !=  today.strftime("%H")    # in this case it is the same day just update hour from now
             puts "Update on the hour"         
-            daily_api_call((today - Blabber::UPDATE_INTERVAL).strftime("%Y%m%d"), today.strftime("%Y%m%d"))
+            daily_api_call((today - Blabber::YESTERDAY).strftime("%Y%m%d"), today.strftime("%Y%m%d"))
           end                                
         end
 
@@ -32,7 +33,7 @@ module Sinatra
         max_frequency = 0
       
       
-        date = "&begin_date=#{date_first}&end_date=#{date_second}"
+        date = "&begin_date=#{date_first}&end_date=#{date_second}&sort=newest"
         puts date
         (0..Blabber::MAX_NO_PAGES).each do |p|
           query = Blabber::QUERY_TEXT + date + "&page=#{p}"+ "&api-key=" + Blabber::API_KEY
@@ -58,7 +59,7 @@ module Sinatra
             end 
           end 
 
-           word_frequencies.delete_if { |key, value| value < 2 }
+           word_frequencies.delete_if { |key, value| value < 2 or DAYS.include? key.downcase}
 
           if parsed['status'] == 'OK' and word_frequencies.size > 0 
             return_status['status'] = 'OK'                # update here on success
