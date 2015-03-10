@@ -28,43 +28,35 @@ class Blabber < Sinatra::Base
     MAX_NO_PAGES = 10
     UPDATE_INTERVAL = 3600           # this is update time in seconds aka one hour
     QUERY_TEXT = "http://api.nytimes.com/svc/search/v2/articlesearch.json?"
-    @@latest_query = Time.new(0)
-    @@today_hash = ""
-    @@weekly_array = []
-    @@weekly_hash = {}
-    @@number_of_daily_queries = 0
+    
+    # from Sinatra up and running 
+    Blabber.set :latest_query, Time.new(0)
+    Blabber.set :today_hash, {}
+    Blabber.set :daily_array, []
+    Blabber.set :weekly_array, []
+    Blabber.set :weekly_hash, {}
+    Blabber.set :number_of_daily_queries, 0
   end
 
-  
+
   get '/' do
   	slim :root
   end
 
-	
-  get '/daily-data' do
-    today = Time.now
-    if today.strftime("%Y%m%d") != @@latest_query.strftime("%Y%m%d")  # this is new day put @@latest_query in history array
-      @@weekly_array << @@today_hash
-      #update_weekly_array(@@weekly_array, weekly_hash) if @@weekly_array.size > 7
-        
-      @@number_of_daily_queries = 1
-      @@latest_query = Time.now
-      @@today_hash = daily_api_call((@@latest_query - 1).strftime("%Y%m%d"),
-      @@latest_query.strftime("%Y%m%d"))
-    else
-      if today +  UPDATE_INTERVAL < @@latest_query     # in this case it is the same day just update hour from now
-        puts "Update on the hour"
-        @@number_of_daily_queries += 1  
-        @@latest_query = DateTime.now
-		    @@today_hash = daily_api_call((@@latest_query - 1).strftime("%Y%m%d"),
-        @@latest_query.strftime("%Y%m%d"))
-      end                                
-    end
+	get '/update-data' do
+    update.to_json
+  end
 
-		@@today_hash.to_json
+
+  get '/daily-data' do
+	  Blabber.today_hash.to_json
 	end
 
-	
+	get '/hourly-data' do
+    puts params['hour']
+    Blabber.daily_array[params['hour'].to_i].to_json 
+  end
+
   get '/blab-data' do
     BLA = {'Bla' => 20, 'BlaBla' => 6, '404' => 10, 'Chatter' => 5, 'endless' =>11 }
     BLA.to_json
