@@ -32,6 +32,7 @@ class Blabber < Sinatra::Base
     # from Sinatra up and running 
     Blabber.set :latest_query, Time.new(0)
     Blabber.set :today_hash, {}
+    Blabber.set :daily_array, []
     Blabber.set :weekly_array, []
     Blabber.set :weekly_hash, {}
     Blabber.set :number_of_daily_queries, 0
@@ -51,7 +52,11 @@ class Blabber < Sinatra::Base
 	  Blabber.today_hash.to_json
 	end
 
-	
+	get '/hourly-data' do
+    puts params['hour']
+    Blabber.daily_array[params['hour'].to_i].to_json 
+  end
+
   get '/blab-data' do
     BLA = {'Bla' => 20, 'BlaBla' => 6, '404' => 10, 'Chatter' => 5, 'endless' =>11 }
     BLA.to_json
