@@ -11,6 +11,7 @@ module Sinatra
         if today.strftime("%Y%m%d") != Blabber.latest_query.strftime("%Y%m%d")  # this is new day put @@latest_query in history array
           puts "Update on new day"
           Blabber.weekly_array << Blabber.today_hash
+          Blabber.daily_array = []
           daily_api_call((today - 86400).strftime("%Y%m%d"), today.strftime("%Y%m%d"))
         else
           if today +  Blabber::UPDATE_INTERVAL < Blabber.latest_query     # in this case it is the same day just update hour from now
