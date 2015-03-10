@@ -14,7 +14,7 @@ module Sinatra
           Blabber.daily_array = []
           daily_api_call((today - 86400).strftime("%Y%m%d"), today.strftime("%Y%m%d"))
         else
-          if today +  Blabber::UPDATE_INTERVAL < Blabber.latest_query     # in this case it is the same day just update hour from now
+          if  Blabber.latest_query +  Blabber::UPDATE_INTERVAL <  today    # in this case it is the same day just update hour from now
             puts "Update on the hour"         
             daily_api_call((today - Blabber::UPDATE_INTERVAL).strftime("%Y%m%d"), today.strftime("%Y%m%d"))
           end                                
