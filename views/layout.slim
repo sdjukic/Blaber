@@ -1,23 +1,41 @@
 doctype html
 html
 
-  head
-    title Blabber discover what's current Blab
-    meta name='author' content="Slavisa Djukic"
-   
-    link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel='stylesheet'
-    link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"
-    link href="./stylesheets/style.css" type="text/css" rel="stylesheet"
+    head
+        title Blabber discover what's current Blab
+        meta name='author' content="Slavisa Djukic"
 
-    script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js" 
-    script src="//d3js.org/d3.v3.min.js" charset="utf-8"
-    script src="./javascript/d3-cloud-master/d3.layout.cloud.js"
-    script src="./javascript/my_script.js"
-  
-  
-  body
+        link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel='stylesheet'
+        link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"
+        link rel="stylesheet" href="./stylesheets/icono.min.css"
+        link href="./stylesheets/style.css" type="text/css" rel="stylesheet"
 
-   == yield 
+        script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js" 
+        script src="//d3js.org/d3.v3.min.js" charset="utf-8"
+        script src="./javascript/d3-cloud-master/d3.layout.cloud.js"
+        script src="./javascript/my_script.js"
+
+
+    body
+        nav class="navbar navbar-default"
+            div class="container-fluid"
+            <!-- Brand and toggle get grouped for better mobile display -->
+                div class="navbar-header"
+                    button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"
+        
+                    span class='icono icono-disqus'
+
+                div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1"
+                    ul class="nav navbar-nav"
+                        li
+                            span class='icono icono-folder'
+                        li 
+                                span class='icono icono-sun'
+                        li   
+                                span class='icono icono-clock'
+                                
+
+        == yield 
   
    
     
