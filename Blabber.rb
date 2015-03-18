@@ -41,7 +41,7 @@ class Blabber < Sinatra::Base
 
 
   get '/' do
-  	slim :home
+  	slim :root
   end
 
 	get '/update-data' do
