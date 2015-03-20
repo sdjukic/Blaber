@@ -1,3 +1,21 @@
+
+.navbar-header{
+	padding: 0.5em 1em .5em 1em;
+}
+.navbar-nav li{
+	padding: 0.5em 1em .5em 1em;
+	cursor: pointer;
+}
+#content {
+	width: 75%;
+	margin: .5em, 2em, 1em, 2em;
+}
+
+.active {
+	background-color: #CCCCCC;
+}
+
+
 svg{
 	margin: .5em;
 }
