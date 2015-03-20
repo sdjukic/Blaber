@@ -1,0 +1,3 @@
+#!/bin/bash
+
+curl "localhost:8081/hourly-data?hour=$1"
