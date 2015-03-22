@@ -50,7 +50,8 @@ class Blabber < Sinatra::Base
 
 
   get '/daily-data' do
-	  Blabber.today_hash.to_json
+	  {daily: Blabber.today_hash,
+     houry: Blabber.daily_array}.to_json
 	end
 
 	get '/hourly-data' do
