@@ -1,7 +1,8 @@
 
 module Sinatra
 
-  MAX_WORD_SIZE = 90
+  MAX_WORD_SIZE = 90.0
+  HOURLY_VALUES = 7    # how many words you want to display for hourly stat
   DAYS = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday',
           'sunday.', 'monday.', 'tuesday.', 'wednesday.', 'thursday.', 'friday.', 'saturday.'
          ]
@@ -76,12 +77,13 @@ module Sinatra
           end 
       end 
 
-      word_frequencies.delete_if { |key, value| value < 2 or DAYS.include? key.downcase}
+      word_frequencies.delete_if { |key, value| value < 3 or DAYS.include? key.downcase}
 
       if word_frequencies.size > 0 
           return_status = 'OK'                # update here on success
           Blabber.latest_query = Time.now
-          Blabber.daily_array[Time.now.strftime("%H").to_i] = word_frequencies.sort_by {|_key, value| value}.slice(-15,15).to_h
+          Blabber.daily_array[Time.now.strftime("%H").to_i] = word_frequencies.sort_by {|_key, value| value}
+                                                                .slice(-HOURLY_VALUES,HOURLY_VALUES).to_h
 
           word_frequencies["word_scale"] = MAX_WORD_SIZE / max_frequency
           puts word_frequencies.length
